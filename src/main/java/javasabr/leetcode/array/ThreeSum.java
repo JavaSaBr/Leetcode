@@ -4,92 +4,214 @@ import java.util.*;
 
 public class ThreeSum {
 
-    public static void main(String[] args) {
-        System.out.println(baseline(new int[]{-1, 0, 1, 2, -1, -4}));
-        System.out.println(baseline(new int[]{0, 1, 1}));
-        System.out.println(baseline(new int[]{0, 0, 0}));
-        System.out.println(baseline(new int[]{0, 0, 0, 0}));
-        System.out.println(baseline(new int[]{-1,0,1,2,-1,-4}));
-    }
+  public static void main(String[] args) {
+    System.out.println("o1:" + optimize1(new int[]{-1,0,1,2,-1,-4}));
+    System.out.println("b:" + baseline(new int[]{-1,0,1,2,-1,-4}));
+    System.out.println(optimize1(new int[]{0,1,1}));
+    System.out.println(optimize1(new int[]{0,0,0}));
+    System.out.println(optimize1(new int[]{0,0,0,0}));
+    System.out.println(optimize1(new int[]{-1,0,1, 2,-1,-4}));
+    System.out.println(optimize1(new int[]{-2,0,0,2,2}));
+    System.out.println(optimize1(new int[]{-1,0,1,2,-1,-4,-2,-3,3,0,4}));
+    // [[-4,0,4],[-4,1,3],[-3,-1,4],[-3,0,3],[-3,1,2],[-2,-1,3],[-2,0,2],[-1,-1,2],[-1,0,1]]
+    // [[-1, 0, 1], [1, 2, -3], [2, -2, 0], [-1, 3, -2], [-4, 4, 0]]
+    // [[-1, 0, 1], [-1, 2, -1], [-1, -2, 3], [-1, -3, 4], [0, 2, -2], [0, -4, 4], [0, -3, 3], [1, 2, -3], [1, -4, 3]]
+    // [[-1, 0, 1], [-1, 2, -1], [-1, -2, 3], [-1, -3, 4], [0, 2, -2], [0, -4, 4], [0, -3, 3], [1, 2, -3], [1, -4, 3]]
 
-    public List<List<Integer>> threeSum(int[] nums) {
+    // [-1,0,1] -> [-1, 0, 1]
+    // [-1,-1,2] ->
+    // [-2,0,2] -> [2, -2, 0]
+    // [-2,-1,3] -> [-1, 3, -2]
+    // [-3,1,2] -> [1, 2, -3]
+    // [-3,0,3] ->
+    // [-3,-1,4] ->
+    // [-4,1,3] ->
+    // [-4,0,4] -> [-4, 4, 0]
+  }
 
+  public List<List<Integer>> threeSum(int[] nums) {
 
-        return List.of();
-    }
+    return List.of();
+  }
 
-    public static List<List<Integer>> baseline(int[] nums) {
+  // [-1,0,1,2,-1,-4,-2,-3,3,0,4]
+  //[[-1, 0, 1], [-1, 2, -1], [-1, -2, 3], [-1, -3, 4], [0, 2, -2], [0, -4, 4], [0, -3, 3], [1, 2, -3], [1, -4, 3]]
 
-        var result = new HashSet<Triple>();
-        var found = new HashMap<Integer, Triple>();
+  // [{-1},0,1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,{0},1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,{1},2,-1,-4,-2,-3,3,0,4]
 
-        for (int i = 0; i < nums.length; i++) {
+  // [{-1},0,1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,{2},-1,-4,-2,-3,3,0,4]
+  // [{-1},0,1,2,-1,-4,-2,-3,3,0,4]
 
-            int first = nums[i];
-            boolean nextIteration = false;
+  // [{-1},0,1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,2,-1,-4,{-2},-3,3,0,4]
+  // [-1,0,1,2,-1,-4,-2,-3,{3},0,4]
 
-            var iFound = found.get(i);
+  // [{-1},0,1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,2,-1,-4,-2,{-3},3,0,4]
+  // [-1,0,1,2,-1,-4,-2,-3,3,0,{4}]
+  //-------------------------------
+  // [-1,{0},1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,{2},-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,2,-1,-4,{-2},-3,3,0,4]
 
-            for (int j = 0; j < nums.length && !nextIteration; j++) {
+  // [-1,{0},1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,2,-1,{-4},-2,-3,3,0,4]
+  // [-1,0,1,2,-1,-4,-2,-3,3,0,{4}]
 
-                if (j == i) {
-                    continue;
-                } else if (iFound != null && iFound.contains(i) && iFound.contains(j)) {
-                    continue;
-                }
+  // [-1,{0},1,2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,2,-1,-4,-2,{-3},3,0,4]
+  // [-1,0,1,2,-1,-4,-2,-3,{3},0,4]
 
-                var jFound = found.get(j);
+  // [-1,0,{1},2,-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,{2},-1,-4,-2,-3,3,0,4]
+  // [-1,0,1,2,-1,-4,-2,{-3},3,0,4]
 
-                if (jFound != null && jFound.contains(i) && jFound.contains(j)) {
-                    continue;
-                }
+  public static List<List<Integer>> optimize1(int[] nums) {
 
-                int second = nums[j];
+    var result = new ArrayList<List<Integer>>();
+    var usedPairs = new HashMap<Integer, Set<Integer>>();
+    var valueToIndex = new HashMap<Integer, Integer>();
 
-                for (int k = 0; k < nums.length; k++) {
+    for (int i = 0; i < nums.length; i++) {
 
-                    if (k == i || k == j) {
-                        continue;
-                    }
+      int first = nums[i];
 
-                    int third = nums[k];
+      Set<Integer> iPairs = usedPairs.get(i);
 
-                    if (first + second + third != 0) {
-                        continue;
-                    }
+      valueToIndex.put(first, i);
 
-                    int minIndex = Math.min(Math.min(i, j), k);
-                    int maxIndex = Math.max(Math.max(i, j), k);
+      for (int j = i + 1; j < nums.length; j++) {
 
-                    int middleIndex;
+        int second = nums[j];
 
-                    if (i > minIndex && i < maxIndex) {
-                        middleIndex = i;
-                    } else if (j > minIndex && j < maxIndex) {
-                        middleIndex = j;
-                    } else {
-                        middleIndex = k;
-                    }
-
-                    found.put(minIndex, )
-                    result.add(new Triple(minIndex, middleIndex, maxIndex));
-                    nextIteration = true;
-                    break;
-                }
-            }
+        if (iPairs != null && iPairs.contains(second)) {
+          continue;
         }
 
-        System.out.println(result);
-
-        return result
-                .stream()
-                .map(indexes -> List.of(nums[indexes.a], nums[indexes.b], nums[indexes.c]))
-                .toList();
-    }
-
-    private record Triple(int a, int b, int c) {
-        boolean contains(int value) {
-            return a == value || b == value || c == value;
+        Set<Integer> jPairs = usedPairs.get(second);
+        if (jPairs != null && jPairs.contains(first)) {
+          continue;
         }
+
+        int diff = -(first + second);
+
+        for (int k = valueToIndex.getOrDefault(diff, 0); k < nums.length; k++) {
+
+          if (k == i || k == j) {
+            continue;
+          }
+
+          int third = nums[k];
+
+          if (iPairs != null && iPairs.contains(third)) {
+            continue;
+          } else if (jPairs != null && jPairs.contains(third)) {
+            continue;
+          }
+
+          Set<Integer> kPairs = usedPairs.get(third);
+          if (kPairs != null && (kPairs.contains(first) || kPairs.contains(second))) {
+            continue;
+          }
+
+          if (first + second + third != 0) {
+            continue;
+          }
+
+          iPairs = usedPairs.computeIfAbsent(first, _ -> new HashSet<>());
+          iPairs.add(second);
+          iPairs.add(third);
+
+          jPairs = usedPairs.computeIfAbsent(second, _ -> new HashSet<>());
+          jPairs.add(first);
+          jPairs.add(third);
+
+          kPairs = usedPairs.computeIfAbsent(third, _ -> new HashSet<>());
+          kPairs.add(first);
+          kPairs.add(second);
+
+          //System.out.printf("<%s-%s-%s>%n", i, j, k);
+
+          result.add(List.of(first, second, third));
+          break;
+        }
+      }
     }
+
+    return result;
+  }
+
+  public static List<List<Integer>> baseline(int[] nums) {
+
+    var result = new ArrayList<List<Integer>>();
+    var usedPairs = new HashMap<Integer, Set<Integer>>();
+
+    for (int i = 0; i < nums.length; i++) {
+
+      int first = nums[i];
+
+      Set<Integer> iPairs = usedPairs.get(i);
+
+      for (int j = 0; j < nums.length; j++) {
+
+        if (j == i) {
+          continue;
+        }
+
+        int second = nums[j];
+
+        if (iPairs != null && iPairs.contains(second)) {
+          continue;
+        }
+
+        Set<Integer> jPairs = usedPairs.get(second);
+        if (jPairs != null && jPairs.contains(first)) {
+          continue;
+        }
+
+        for (int k = 0; k < nums.length; k++) {
+
+          if (k == i || k == j) {
+            continue;
+          }
+
+          int third = nums[k];
+
+          if (iPairs != null && iPairs.contains(third)) {
+            continue;
+          } else if (jPairs != null && jPairs.contains(third)) {
+            continue;
+          }
+
+          Set<Integer> kPairs = usedPairs.get(third);
+          if (kPairs != null && (kPairs.contains(first) || kPairs.contains(second))) {
+            continue;
+          }
+
+          if (first + second + third != 0) {
+            continue;
+          }
+
+          iPairs = usedPairs.computeIfAbsent(first, _ -> new HashSet<>());
+          iPairs.add(second);
+          iPairs.add(third);
+
+          jPairs = usedPairs.computeIfAbsent(second, _ -> new HashSet<>());
+          jPairs.add(first);
+          jPairs.add(third);
+
+          kPairs = usedPairs.computeIfAbsent(third, _ -> new HashSet<>());
+          kPairs.add(first);
+          kPairs.add(second);
+
+          result.add(List.of(first, second, third));
+        }
+      }
+    }
+
+    return result;
+  }
 }
