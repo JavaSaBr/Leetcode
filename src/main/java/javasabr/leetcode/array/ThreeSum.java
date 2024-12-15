@@ -253,8 +253,8 @@ public class ThreeSum {
       result.add(List.of(0, 0, 0));
     }
 
-    System.out.println("Iterations = " + iterations + ", time = " + (System.currentTimeMillis() - start) + ", result = "
-        + result.size());
+    //System.out.println("Iterations = " + iterations + ", time = " + (System.currentTimeMillis() - start) + ", result = "
+    //    + result.size());
 
     return result;
   }
@@ -688,7 +688,7 @@ public class ThreeSum {
       }
     }
 
-    System.out.println("Iterations = " + iterations);
+    //System.out.println("Iterations = " + iterations);
 
     return result;
   }

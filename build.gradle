@@ -1,13 +1,33 @@
 plugins {
-    id "java"
+  id "java"
+  id "me.champeau.jmh" version "0.7.2"
+}
+
+repositories {
+  mavenCentral()
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_23
-    targetCompatibility = JavaVersion.VERSION_23
+  sourceCompatibility = JavaVersion.VERSION_23
+  targetCompatibility = JavaVersion.VERSION_23
+}
+
+dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
+
+jmh {
+  warmupIterations = 2
+  iterations = 5
+  fork = 1
 }
 
 wrapper {
-    gradleVersion = '8.4'
-    distributionType = Wrapper.DistributionType.ALL
+  gradleVersion = '8.11.1'
+  distributionType = Wrapper.DistributionType.ALL
 }
