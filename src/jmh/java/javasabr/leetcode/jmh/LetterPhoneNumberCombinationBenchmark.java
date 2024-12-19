@@ -9,13 +9,13 @@ import org.openjdk.jmh.infra.Blackhole;
 @State(Scope.Benchmark)
 public class LetterPhoneNumberCombinationBenchmark {
 
-  @Benchmark
+  //@Benchmark
   public void baseline(Blackhole bh) {
     var result = LetterPhoneNumberCombination.baseline("2345");
     bh.consume(result);
   }
 
-  @Benchmark
+  //@Benchmark
   public void optimize1(Blackhole bh) {
     var result = LetterPhoneNumberCombination.optimize1("2345");
     bh.consume(result);
