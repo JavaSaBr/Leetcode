@@ -2,7 +2,7 @@ package javasabr.leetcode.number;
 
 public class DivideTwoIntegers {
     public static void main(String[] args) {
-        //System.out.println(baseline(10, 3));
+        //System.out.println(bitshiftBased(10, 3));
         //System.out.println(bitshiftBased(10, 3));
         //System.out.println(baseline(7, -3));
         //System.out.println(baseline(-12, -3));
@@ -14,8 +14,11 @@ public class DivideTwoIntegers {
         //System.out.println(bitshiftBased(-2147483648, 6));
         //System.out.println(bitshiftBased(-1006986286, -2145851451));
         //System.out.println(bitshiftBased(-1010369383, -2147483648));
-        System.out.println(bitshiftBased(1036963541, -24409858));
-        //System.out.println(bitshiftBased(240, 16));
+        //System.out.println(bitshiftBased(1036963541, -24409858));
+        //System.out.println(bitshiftBased(240, 10));
+        //System.out.println(bitshiftBased(Integer.MIN_VALUE, 10));
+        //System.out.println(bitshiftBased(1026117192, -874002063));
+        System.out.println(bitshiftBased(-2147483648, -3));
     }
 
     public static int bitshiftBased(int dividend, int divisor) {
@@ -54,10 +57,19 @@ public class DivideTwoIntegers {
 
     private static int findPositiveWithBitshift(int divisor, int target) {
 
+        int halfTarget = target >> 1;
+
+        if (divisor == 2) {
+            return halfTarget;
+        } else if (halfTarget < divisor) {
+            return 1;
+        }
+
+        int initValue = 1;
+        int shiftTimes = 0;
+        int initDivisor = 0;
+
         if (divisor % 2 == 0) {
-            if (divisor == 2) {
-                return target >> 1;
-            }
 
             int times = 1;
             int nextDivisor = 2;
@@ -70,14 +82,19 @@ public class DivideTwoIntegers {
             if (nextDivisor == divisor) {
                 return target >> times;
             }
+
+            initValue = target >> times;
+            shiftTimes = times - 1;
+            initDivisor = 2 << (shiftTimes - 1);
         }
 
         int prevSum = 0;
-        for (int val = 1;; val++) {
 
-            int sum = 0;
+        for (int val = initValue;; val++) {
 
-            for (int i = 0; i < divisor; i++) {
+            int sum = shiftTimes == 0 ? 0 : val << shiftTimes;
+
+            for (int i = initDivisor; i < divisor; i++) {
                 sum += val;
             }
 
@@ -97,10 +114,19 @@ public class DivideTwoIntegers {
 
     private static int findNegativeWithBitshift(int divisor, int target) {
 
+        int halfTarget = target >> 1;
+
+        if (divisor == 2) {
+            return halfTarget;
+        } else if (halfTarget < divisor) {
+            return 1;
+        }
+
+        int initValue = 1;
+        int shiftTimes = 0;
+        int initDivisor = 0;
+
         if (divisor % 2 == 0) {
-            if (divisor == 2) {
-                return target >> 1;
-            }
 
             int times = 1;
             int nextDivisor = 2;
@@ -113,14 +139,18 @@ public class DivideTwoIntegers {
             if (nextDivisor == divisor) {
                 return target >> times;
             }
+
+            initValue = Math.abs(target >> times);
+            shiftTimes = times - 1;
+            initDivisor = 2 << (shiftTimes - 1);
         }
 
         int prevSum = 0;
-        for (int val = 1;; val++) {
+        for (int val = initValue;; val++) {
 
-            int sum = 0;
+            int sum = shiftTimes == 0 ? 0 : -(val << shiftTimes);
 
-            for (int i = 0; i < divisor; i++) {
+            for (int i = initDivisor; i < divisor; i++) {
                 sum -= val;
             }
 
