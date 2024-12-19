@@ -10,21 +10,15 @@ import org.openjdk.jmh.infra.Blackhole;
 @State(Scope.Benchmark)
 public class GenerateParenthesesBenchmark {
 
-  @Benchmark
+  //@Benchmark
   public void baseline(Blackhole bh) {
     var result = GenerateParentheses.baseline(8);
     bh.consume(result);
   }
 
   @Benchmark
-  public void optimize1(Blackhole bh) {
-    var result = GenerateParentheses.optimize1(8);
-    bh.consume(result);
-  }
-
-  @Benchmark
-  public void optimize2(Blackhole bh) {
-    var result = GenerateParentheses.optimize2(8);
+  public void optimize3(Blackhole bh) {
+    var result = GenerateParentheses.optimize3(8);
     bh.consume(result);
   }
 }

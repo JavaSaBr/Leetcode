@@ -9,7 +9,7 @@ import java.util.Set;
 public class GenerateParentheses {
 
   private static String[][] MATRIX;
-  private static List<String>[] SYMMETRIC_CACHE = new List[9];
+  private static final List<String>[] SYMMETRIC_CACHE = new List[4];
   private static List<String>[] INJECT_CACHE = new List[9];
 
   static {
@@ -34,8 +34,9 @@ public class GenerateParentheses {
     //["((()))","(()())","(())()","()(())","()()()"]
     //[()()(), (()()), ()(()), ((())), (())()]
     //System.out.println(baseline(4));
-    System.out.println(optimize1(4));
-    System.out.println(optimize2(4));
+   // System.out.println(optimize1(4));
+   // System.out.println(optimize2(4));
+   // System.out.println(optimize3(4));
     // ["(((())))","((()()))","((())())","((()))()","(()(()))","(()()())","(()())()","(())(())","(())()()","()((()))
     // ","()(()())","()(())()","()()(())","()()()()"]
     // [()()()(), (()()()), ((()())), (((()))), ((()))(), ((())()), ()((())), (()(()))]
@@ -50,12 +51,12 @@ public class GenerateParentheses {
     // [()()()(), (()())(), (()(())), ()()(()), (((()))), (())()(), (())(()), ()((())), ()(())(), ()(()()), (()()()),
     // ((()())), ((()))(), ((())())]
 
+    //System.out.println(optimize3(5));
     //System.out.println(baseline(5));
-    //System.out.println(optimize1(5));
-    //System.out.println(optimize2(5));
-    //System.out.println(baseline(8));
     //System.out.println(optimize1(8));
-    System.out.println(optimize2(8));
+    //System.out.println(optimize2(8));
+    System.out.println(optimize3(8));
+    System.out.println(baseline(8));
     // ["((((()))))","(((()())))","(((())()))","(((()))())","(((())))()","((()(())))","((()()()))","((()())())",
     // "((()()))()","((())(()))","((())()())","((())())()","((()))(())","((()))()()","(()((())))","(()(()()))","(()(())())",
     // "(()(()))()","(()()(()))","(()()()())","(()()())()","(()())(())","(()())()()","(())((()))","(())(()())","(())(())()",
@@ -75,77 +76,48 @@ public class GenerateParentheses {
   }
 
   public static List<String> optimize3(int n) {
-
-    var result = new HashSet<String>(n * n * n, 0.75F);
-    var builder = new StringBuilder();
-
-    List<String>[] cache = new List[9];
-
-    generateN4(n, builder, cache, result);
-
-    return List.copyOf(result);
+    return List.copyOf(generateN4(n));
   }
 
-  private static Collection<String> generateN4(int n, StringBuilder builder, List<String>[] cache) {
+  private static Collection<String> generateN4(int n) {
 
     if (n < 1) {
       return Set.of();
-    }
-
-    List<String> cached = cache[n];
-    if (cached != null) {
-      return cached;
-    }
-
-    List<String> symmetric = symmetricGen2(n, builder);
-
-    if (n < 3) {
-      cache[n] = symmetric;
-      return symmetric;
+    } else if (n < 3) {
+      return SYMMETRIC_CACHE[n];
     }
 
     // inject recur flow
     var uniqSet = new HashSet<String>(n * n * n, 0.75F);
-    var subResult = generateN4(n - 1, builder, cache);
+    var subResult = generateN4(n - 1);
 
     for (String variant : subResult) {
-
       // left inject
-      builder.append('(').append(')');
-      builder.append(variant);
-
-      uniqSet.add(builder.toString());
-      builder.delete(0, builder.length());
-
-      // right inject
-      builder.append(variant);
-      builder.append('(').append(')');
-
-      uniqSet.add(builder.toString());
-      builder.delete(0, builder.length());
-
+      uniqSet.add("()" + variant);
       // middle inject
-      for (int j = 0; j < variant.length(); j++) {
+      for (int j = 0, length = variant.length() - 2; j < length; j++) {
+
         char ch = variant.charAt(j);
-        if (ch == '(') {
-          builder.append(variant, 0, j + 1);
-          builder.append('(').append(')');
-          builder.append(variant, j + 1, variant.length());
-          uniqSet.add(builder.toString());
-          builder.delete(0, builder.length());
+        if (ch != '(') {
+          continue;
         }
+
+        uniqSet.add(new StringBuilder(variant)
+            .insert(j + 1, "()")
+            .toString());
       }
     }
 
-    cache[n] = List.copyOf(uniqSet);
-    return cache[n];
+    return uniqSet;
   }
 
-  private static List<String> symmetricGen2(int n, StringBuilder builder) {
+  private static List<String> symmetricGen2(int n) {
 
     var result = new ArrayList<String>(n * 2);
+
     for (int level = 1; level <= n; level++) {
 
+      var builder = new StringBuilder(n * 2);
       int opened = 0;
 
       for (int pair = 0; pair < n; pair++) {
@@ -163,7 +135,6 @@ public class GenerateParentheses {
       }
 
       result.add(builder.toString());
-      builder.delete(0, builder.length());
     }
 
     return result;
