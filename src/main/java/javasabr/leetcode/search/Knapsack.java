@@ -70,24 +70,22 @@ public class Knapsack {
     int length = weights.length;
     int[][] indexes = new int[length + 1][maxWeight + 1];
 
-    for (int index = 0; index <= length; index++) {
-      for (int targetWeight = 0; targetWeight <= maxWeight; targetWeight++) {
-        if (index == 0 || targetWeight == 0) {
-          indexes[index][targetWeight] = 0;
-          continue;
-        }
+    for (int index = 1; index <= length; index++) {
 
-        int prevIndex = index - 1;
-        int weight = weights[prevIndex];
+      int prevIndex = index - 1;
+      int weight = weights[prevIndex];
+      int value = values[prevIndex];
+
+      for (int targetWeight = 1; targetWeight <= maxWeight; targetWeight++) {
 
         if (weight <= targetWeight) {
-          int weightDiff = targetWeight - weight;
-          int withIncluded = values[prevIndex] + indexes[prevIndex][weightDiff];
-          int withExcluded = indexes[prevIndex][targetWeight];
-          indexes[index][targetWeight] = Math.max(withIncluded, withExcluded);
+          int diff = targetWeight - weight;
+          int withIncluded = value + indexes[prevIndex][diff];
+          int toCopy = indexes[prevIndex][targetWeight];
+          indexes[index][targetWeight] = Math.max(withIncluded, toCopy);
         } else {
-          int withExclude = indexes[prevIndex][targetWeight];
-          indexes[index][targetWeight] = withExclude;
+          int toCopy = indexes[prevIndex][targetWeight];
+          indexes[index][targetWeight] = toCopy;
         }
       }
     }
