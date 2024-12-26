@@ -7,17 +7,17 @@ public class CoinChange {
   public static void main(String[] args) {
     int[] coins = {1, 2, 3};
     int sum = 5;
-    System.out.println(countRecur(coins, sum));
-    System.out.println(countRecurWithMemo(coins, sum));
+    System.out.println(recursion(coins, sum));
+    System.out.println(recursionWithMemo(coins, sum));
     System.out.println(bottomUp(coins, sum));
     System.out.println(bottomUpSpaceOptimized(coins, sum));
   }
 
-  public static int countRecur(int[] coins, int sum) {
-    return countRecur(coins, coins.length, sum);
+  public static int recursion(int[] coins, int sum) {
+    return recursion(coins, coins.length, sum);
   }
 
-  private static int countRecur(int[] coins, int length, int sum) {
+  private static int recursion(int[] coins, int length, int sum) {
 
     if (sum == 0) {
       return 1;
@@ -25,22 +25,22 @@ public class CoinChange {
       return 0;
     }
 
-    int lastCoin = coins[length - 1];
-    int reducedSumOnLastCoin = countRecur(coins, length, sum - lastCoin);
-    int withoutLastCoin = countRecur(coins, length - 1, sum);
+    int coin = coins[length - 1];
+    int withSubtractedCoin = recursion(coins, length, sum - coin);
+    int withExcludedCoin = recursion(coins, length - 1, sum);
 
-    return reducedSumOnLastCoin + withoutLastCoin;
+    return withSubtractedCoin + withExcludedCoin;
   }
 
-  public static int countRecurWithMemo(int[] coins, int sum) {
+  public static int recursionWithMemo(int[] coins, int sum) {
     int[][] memo = new int[coins.length][sum + 1];
     for (int[] row : memo) {
       Arrays.fill(row, -1);
     }
-    return countRecurWithMemo(coins, coins.length, sum, memo);
+    return recursionWithMemo(coins, coins.length, sum, memo);
   }
 
-  private static int countRecurWithMemo(int[] coins, int length, int sum, int[][] memo) {
+  private static int recursionWithMemo(int[] coins, int length, int sum, int[][] memo) {
 
     if (sum == 0) {
       return 1;
@@ -52,11 +52,11 @@ public class CoinChange {
       return memo[length - 1][sum];
     }
 
-    int lastCoin = coins[length - 1];
-    int reducedSumOnLastCoin = countRecurWithMemo(coins, length, sum - lastCoin, memo);
-    int withoutLastCoin = countRecurWithMemo(coins, length - 1, sum, memo);
+    int coin = coins[length - 1];
+    int withSubtractedCoin = recursionWithMemo(coins, length, sum - coin, memo);
+    int withExcludedCoin = recursionWithMemo(coins, length - 1, sum, memo);
 
-    return memo[length - 1][sum] = reducedSumOnLastCoin + withoutLastCoin;
+    return memo[length - 1][sum] = withSubtractedCoin + withExcludedCoin;
   }
 
   public static int bottomUp(int[] coins, int sum) {
@@ -66,14 +66,13 @@ public class CoinChange {
     int[][] indexes = new int[length + 1][sum + 1];
     indexes[0][0] = 1;
 
-    for (int i = 1; i <= length; i++) {
-      for (int j = 0; j <= sum; j++) {
-
-        indexes[i][j] += indexes[i - 1][j];
-
-        int prevCoin = coins[i - 1];
-        if ((j - prevCoin) >= 0) {
-          indexes[i][j] += indexes[i][j - prevCoin];
+    for (int index = 1; index <= length; index++) {
+      int prev = index - 1;
+      int coin = coins[prev];
+      for (int targetSum = 0; targetSum <= sum; targetSum++) {
+        indexes[index][targetSum] += indexes[prev][targetSum];
+        if ((targetSum - coin) >= 0) {
+          indexes[index][targetSum] += indexes[index][targetSum - coin];
         }
       }
     }
