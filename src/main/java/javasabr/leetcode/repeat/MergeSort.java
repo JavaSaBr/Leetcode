@@ -14,23 +14,16 @@ public class MergeSort {
     System.out.println("R:" + Arrays.toString(sort(input)));
   }
 
-  private static int[] sort(int[] input) {
+  public static int[] sort(int[] input) {
 
     int[] copy = Arrays.copyOf(input, input.length);
 
-    int low = 0;
-    int high = input.length - 1;
-    int mid = low + (high - low) / 2;
-
-    sort(copy, low, mid);
-    sort(copy, mid + 1, high);
-
-    merge(copy, low, mid, high);
+    sort(copy, 0, copy.length - 1);
 
     return copy;
   }
 
-  private static void sort(int[] input, int low, int high) {
+  private static void sort(int[] array, int low, int high) {
 
     if (low >= high) {
       return;
@@ -38,39 +31,38 @@ public class MergeSort {
 
     int mid = low + (high - low) / 2;
 
-    sort(input, low, mid);
-    sort(input, mid + 1, high);
-
-    merge(input, low, mid, high);
+    sort(array, low, mid);
+    sort(array, mid + 1, high);
+    merge(array, low, mid, high);
   }
 
-  private static void merge(int[] input, int low, int mid, int high) {
+  private static void merge(int[] array, int low, int mid, int high) {
 
     int leftLength = mid - low + 1;
     int rightLength = high - mid;
 
-    int[] leftArray = new int[leftLength];
-    int[] rightArray = new int[rightLength];
+    int[] left = new int[leftLength];
+    int[] right = new int[rightLength];
 
-    System.arraycopy(input, low, leftArray, 0, leftLength);
-    System.arraycopy(input, mid + 1, rightArray, 0, rightLength);
+    System.arraycopy(array, low, left, 0, leftLength);
+    System.arraycopy(array, mid + 1, right, 0, rightLength);
 
-    int leftIndex = 0, rightIndex = 0, k = low;
+    int leftIndex = 0, rightIndex = 0, index = low;
 
     while (leftIndex < leftLength && rightIndex < rightLength) {
-      if (leftArray[leftIndex] <= rightArray[rightIndex]) {
-        input[k++] = leftArray[leftIndex++];
+      if (left[leftIndex] < right[rightIndex]) {
+        array[index++] = left[leftIndex++];
       } else {
-        input[k++] = rightArray[rightIndex++];
+        array[index++] = right[rightIndex++];
       }
     }
 
     while (leftIndex < leftLength) {
-      input[k++] = leftArray[leftIndex++];
+      array[index++] = left[leftIndex++];
     }
 
     while (rightIndex < rightLength) {
-      input[k++] = rightArray[rightIndex++];
+      array[index++] = right[rightIndex++];
     }
   }
 }
