@@ -189,9 +189,9 @@ public class ManachersAlgorithm {
     //System.out.println(Arrays.toString(chars));
     //System.out.println(Arrays.toString(indexes));
 
-    String builder = extractResult(chars, indexes, longest);
-    if (builder != null) {
-      return builder;
+    String result = extractResult(chars, indexes, longest);
+    if (result != null) {
+      return result;
     }
 
     return text.substring(0, 1);
@@ -283,9 +283,9 @@ public class ManachersAlgorithm {
 
     //System.out.println(Arrays.toString(indexes));
 
-    String builder = extractResult(text, indexes, longest);
-    if (builder != null) {
-      return builder;
+    String result = extractResult(text, indexes, longest);
+    if (result != null) {
+      return result;
     }
 
     return text.substring(0, 1);
