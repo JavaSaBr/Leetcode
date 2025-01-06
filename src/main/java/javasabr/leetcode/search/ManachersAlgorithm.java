@@ -1,7 +1,5 @@
 package javasabr.leetcode.search;
 
-import java.util.Arrays;
-
 public class ManachersAlgorithm {
 
   public static void main(String[] args) {
@@ -139,7 +137,7 @@ public class ManachersAlgorithm {
       int centerRightPosition = centerPosition + centerLength;
       int currentRightPosition = centerPosition + 1;
 
-      // should just calculate next palindrome
+      // should just calculate edges palindrome
       if (currentRightPosition > centerRightPosition) {
         int length = recurPalindromeLength(chars, currentRightPosition);
         indexes[currentRightPosition] = length;
@@ -234,7 +232,7 @@ public class ManachersAlgorithm {
       int centerRightPosition = centerPosition + centerLength;
       int currentRightPosition = centerPosition + 1;
 
-      // should just calculate next palindrome
+      // should just calculate edges palindrome
       if (currentRightPosition > centerRightPosition) {
         int length = recurPalindromeLength(text, currentRightPosition);
         indexes[currentRightPosition] = length;

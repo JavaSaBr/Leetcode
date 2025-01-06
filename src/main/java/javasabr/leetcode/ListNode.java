@@ -52,6 +52,6 @@ public class ListNode {
 
     @Override
     public String toString() {
-        return "{" + "val=" + val + ", next=" + (next == null ? "null" : next.val) + '}';
+        return "{" + "val=" + val + ", edges=" + (next == null ? "null" : next.val) + '}';
     }
 }
