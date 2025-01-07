@@ -72,7 +72,6 @@ public class AStarAlgorithm {
     }
 
     path.add(start);
-
     return path;
   }
 

@@ -1,4 +1,4 @@
-package javasabr.leetcode.search;
+package javasabr.leetcode.repeat;
 
 import static javasabr.leetcode.DirectionGraph.Connections.node;
 import static javasabr.leetcode.DirectionGraph.Connections.root;
@@ -37,7 +37,7 @@ public class DetectCycleInDirectedGraph {
 
     var stack = new ArrayDeque<DirectionGraphNode<Integer>>();
 
-    for (var root : graph.roots()) {
+    for (DirectionGraphNode<Integer> root : graph.roots()) {
       if (isCycled(root, stack)) {
         return true;
       }
@@ -46,18 +46,16 @@ public class DetectCycleInDirectedGraph {
     return false;
   }
 
-  protected static boolean isCycled(
+  private static boolean isCycled(
       DirectionGraphNode<Integer> node,
       Deque<DirectionGraphNode<Integer>> stack) {
 
-    System.out.println("Found: " + node.value());
-
     stack.addLast(node);
 
-    for (var next : node.next()) {
-      if (stack.contains(next)) {
+    for (DirectionGraphNode<Integer> nextNode : node.next()) {
+      if (stack.contains(nextNode)) {
         return true;
-      } else if (isCycled(next, stack)) {
+      } else if (isCycled(nextNode, stack)) {
         return true;
       }
     }

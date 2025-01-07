@@ -33,6 +33,7 @@ public class MergeSort {
 
     sort(array, low, mid);
     sort(array, mid + 1, high);
+
     merge(array, low, mid, high);
   }
 
@@ -47,22 +48,23 @@ public class MergeSort {
     System.arraycopy(array, low, left, 0, leftLength);
     System.arraycopy(array, mid + 1, right, 0, rightLength);
 
-    int leftIndex = 0, rightIndex = 0, index = low;
+    int leftIndex = 0, rightIndex = 0;
+    int resultIndex = low;
 
     while (leftIndex < leftLength && rightIndex < rightLength) {
       if (left[leftIndex] < right[rightIndex]) {
-        array[index++] = left[leftIndex++];
+        array[resultIndex++] = left[leftIndex++];
       } else {
-        array[index++] = right[rightIndex++];
+        array[resultIndex++] = right[rightIndex++];
       }
     }
 
     while (leftIndex < leftLength) {
-      array[index++] = left[leftIndex++];
+      array[resultIndex++] = left[leftIndex++];
     }
 
     while (rightIndex < rightLength) {
-      array[index++] = right[rightIndex++];
+      array[resultIndex++] = right[rightIndex++];
     }
   }
 }

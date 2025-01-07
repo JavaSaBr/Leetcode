@@ -9,6 +9,11 @@ public class MergeSort {
     System.out.println(Arrays.toString(array));
     sort(array, 0, array.length - 1);
     System.out.println(Arrays.toString(array));
+
+    int[] array2 = {-54, 38, 0, 7, -40, -23, 75, 62, 90, -26, -105, 62, 80, 38};
+    System.out.println(Arrays.toString(array2));
+    sort(array2, 0, array2.length - 1);
+    System.out.println(Arrays.toString(array2));
   }
 
   static void merge(int[] array, int left, int middle, int right) {
@@ -22,7 +27,7 @@ public class MergeSort {
     System.arraycopy(array, left, leftSubArray, 0, leftSize);
     System.arraycopy(array, middle + 1, rightSubArray, 0, rightSize);
 
-    System.out.println("Marge:" + Arrays.toString(leftSubArray) + "><" + Arrays.toString(rightSubArray));
+    System.out.println("Merge:" + Arrays.toString(leftSubArray) + "><" + Arrays.toString(rightSubArray));
 
     int leftIndex = 0, rightIndex = 0;
     int sourceIndex = left;

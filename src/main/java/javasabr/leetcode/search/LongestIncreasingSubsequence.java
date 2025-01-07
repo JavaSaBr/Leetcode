@@ -7,8 +7,8 @@ public class LongestIncreasingSubsequence {
   public static void main(String[] args) {
     int[] array = { 10, 22, 9, 33, 21, 50, 41, 60 };
     System.out.println(recursion(array));
-    System.out.println(memoization(array));
-    System.out.println(bottomUp(array));
+    System.out.println(memo(array));
+    System.out.println(dp1d(array));
   }
 
   public static int recursion(int[] array) {
@@ -17,69 +17,72 @@ public class LongestIncreasingSubsequence {
     int longest = 1;
 
     for (int limit = 1; limit < length; limit++) {
-      int result = recursion(array, limit);
-      longest = Math.max(longest, result);
+      int countUntilLimit = recursion(array, limit);
+      longest = Math.max(longest, countUntilLimit);
     }
 
     return longest;
   }
 
-  private static int recursion(int[] array, int limit) {
+  private static int recursion(int[] array, int length) {
 
-    if (limit == 0) {
+    if (length == 0) {
       return 1;
     }
 
     int longest = 1;
+    int highestValue = array[length];
 
-    for (int i = 0; i < limit; i++) {
-      if (array[i] < array[limit]) {
-        int result = recursion(array, i);
-        longest = Math.max(longest, result + 1);
+    for (int limit = 0; limit < length; limit++) {
+      if (array[limit] < highestValue) {
+        int countUntilLimit = recursion(array, limit);
+        longest = Math.max(longest, countUntilLimit + 1);
       }
     }
 
     return longest;
   }
 
-  public static int memoization(int[] arr) {
+  public static int memo(int[] array) {
 
-    int length = arr.length;
+    int length = array.length;
 
-    int[] storedResults = new int[length];
-    Arrays.fill(storedResults, -1);
+    int[] indexes = new int[length];
+    Arrays.fill(indexes, -1);
 
     int longest = 1;
     for (int limit = 1; limit < length; limit++) {
-      int result = memoization(arr, limit, storedResults);
-      longest = Math.max(longest, result);
+      int countUntilLimit = memo(array, limit, indexes);
+      longest = Math.max(longest, countUntilLimit);
     }
 
     return longest;
   }
 
-  private static int memoization(int[] array, int limit, int[] storedResults) {
+  private static int memo(int[] array, int length, int[] indexes) {
 
-    if (limit == 0) {
+    if (length == 0) {
       return 1;
-    } else if (storedResults[limit] != -1) {
-      return storedResults[limit];
+    } else if (indexes[length] != -1) {
+      return indexes[length];
     }
 
     int longest = 1;
-    for (int i = 0; i < limit; i++) {
-      if (array[i] < array[limit]) {
-        int result = memoization(array, i, storedResults);
-        longest = Math.max(longest, result + 1);
+    int highestValue = array[length];
+
+    for (int limit = 0; limit < length; limit++) {
+      if (array[limit] < highestValue) {
+        int countUntilLimit = memo(array, limit, indexes);
+        longest = Math.max(longest, countUntilLimit + 1);
       }
     }
 
-    storedResults[limit] = longest;
+    indexes[length] = longest;
 
-    return storedResults[limit];
+    return longest;
   }
 
-  public static int bottomUp(int[] array) {
+  public static int dp1d(int[] array) {
 
     int length = array.length;
     int[] indexes = new int[length];
@@ -89,9 +92,9 @@ public class LongestIncreasingSubsequence {
     int max = 1;
 
     for (int limit = 1; limit < length; limit++) {
-      int value = array[limit];
+      int highestValue = array[limit];
       for (int i = 0; i < limit; i++) {
-        if (array[i] > value) {
+        if (array[i] > highestValue) {
           continue;
         }
         indexes[limit] = Math.max(indexes[limit], indexes[i] + 1);

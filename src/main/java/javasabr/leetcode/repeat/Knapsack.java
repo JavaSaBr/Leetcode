@@ -1,5 +1,7 @@
 package javasabr.leetcode.repeat;
 
+import java.util.Arrays;
+
 public class Knapsack {
 
   public static void main(String[] args) {
@@ -8,52 +10,85 @@ public class Knapsack {
     int maxWeight = 50;
     int length = profit.length;
     System.out.println(recursion(maxWeight, weight, profit, length));
-    System.out.println(bottomUp(maxWeight, weight, profit));
+    System.out.println(memo(maxWeight, weight, profit));
+    System.out.println(dp1d(maxWeight, weight, profit));
   }
 
   public static int recursion(int maxWeight, int[] weights, int[] values, int length) {
 
-    if(length == 0) {
+    if (maxWeight < 0 || length < 1) {
       return 0;
     }
 
-    int weight = weights[length - 1];
+    int index = length - 1;
+    int weight = weights[index];
 
     if (weight > maxWeight) {
       return recursion(maxWeight, weights, values, length - 1);
     }
 
-    int value = values[length - 1];
-
+    int profit = values[index];
     int withExcluded = recursion(maxWeight, weights, values, length - 1);
-    int withReducedMaxWeight = recursion(maxWeight - weight, weights, values, length - 1);
+    int withSubtracted = profit + recursion(maxWeight - weight, weights, values, length - 1);
 
-    return Math.max(withExcluded, withReducedMaxWeight + value);
+    return Math.max(withExcluded, withSubtracted);
   }
 
-  public static int bottomUp(int maxWeight, int[] weights, int[] values) {
+  public static int memo(int maxWeight, int[] weights, int[] values) {
 
-    int length = values.length;
-    int[][] indexes = new int[length + 1][maxWeight + 1];
+    int[][] memo = new int[weights.length + 1][maxWeight + 1];
 
-    for(int limit = 1; limit <= length; limit++) {
+    for (int[] array : memo) {
+      Arrays.fill(array, -1);
+    }
 
-      int index = limit - 1;
-      int weight = weights[index];
-      int value = values[index];
+    return memo(maxWeight, weights, values, values.length, memo);
+  }
 
-      for (int targetWeight = 0; targetWeight <= maxWeight; targetWeight++) {
+  private static int memo(int maxWeight, int[] weights, int[] values, int length, int[][] memo) {
+
+    if (maxWeight < 0 || length < 1) {
+      return 0;
+    }
+
+    int index = length - 1;
+    int weight = weights[index];
+
+    if (weight > maxWeight) {
+      return memo(maxWeight, weights, values, length - 1, memo);
+    }
+
+    if (memo[index][maxWeight] != -1) {
+      return memo[index][maxWeight];
+    }
+
+    int profit = values[index];
+    int withExcluded = memo(maxWeight, weights, values, length - 1, memo);
+    int withSubtracted = profit + memo(maxWeight - weight, weights, values, length - 1, memo);
+
+    int result = Math.max(withExcluded, withSubtracted);
+
+    memo[index][maxWeight] = result;
+
+    return result;
+  }
+
+  public static int dp1d(int maxWeight, int[] weights, int[] values) {
+
+    int[] indexes = new int[maxWeight + 1];
+
+    for (int usedItems = 1; usedItems <= values.length; usedItems++) {
+      int itemIndex = usedItems - 1;
+      int weight = weights[itemIndex];
+      int profit = values[itemIndex];
+      for (int targetWeight = maxWeight; targetWeight >= 0; targetWeight--) {
         if (weight <= targetWeight) {
-          int diff = targetWeight - weight;
-          int toCopy = indexes[index][targetWeight];
-          int withReducedMaxWeight = indexes[index][diff];
-          indexes[limit][targetWeight] = Math.max(toCopy, withReducedMaxWeight + value);
-        } else {
-          indexes[limit][targetWeight] = indexes[index][targetWeight];
+          int withSubtracted = indexes[targetWeight - weight] + profit;
+          indexes[targetWeight] = Math.max(indexes[targetWeight], withSubtracted);
         }
       }
     }
 
-    return indexes[length][maxWeight];
+    return indexes[maxWeight];
   }
 }
