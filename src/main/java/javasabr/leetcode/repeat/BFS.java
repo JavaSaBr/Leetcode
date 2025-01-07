@@ -1,8 +1,7 @@
 package javasabr.leetcode.repeat;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javasabr.leetcode.Graph;
 import javasabr.leetcode.GraphNode;
@@ -36,53 +35,55 @@ public class BFS {
 
   private static List<Integer> traverse(Graph<Integer> graph, int rootValue) {
 
-    var result = new ArrayList<Integer>();
+    var visited = new LinkedHashSet<Integer>();
     var queue = new ArrayDeque<GraphNode<Integer>>();
-    var visited = new HashSet<GraphNode<Integer>>();
 
-    GraphNode<Integer> start = graph.root(rootValue);
+    GraphNode<Integer> init = graph.root(rootValue);
 
-    queue.add(start);
-    visited.add(start);
+    queue.add(init);
 
     while (!queue.isEmpty()) {
-      GraphNode<Integer> next = queue.removeFirst();
-      result.add(next.value());
-      for (GraphNode<Integer> connected : next.connected()) {
-        if (visited.add(connected)) {
-          queue.addLast(connected);
+      GraphNode<Integer> removed = queue.removeFirst();
+      if (visited.contains(removed.value())) {
+        continue;
+      }
+      visited.add(removed.value());
+      for (GraphNode<Integer> connected : removed.connected()) {
+        if (visited.contains(connected.value())) {
+          continue;
         }
+        queue.addLast(connected);
       }
     }
 
-    return result;
+    return List.copyOf(visited);
   }
 
   private static List<Integer> traverse(Graph<Integer> graph) {
 
-    var result = new ArrayList<Integer>();
+    var visited = new LinkedHashSet<Integer>();
     var queue = new ArrayDeque<GraphNode<Integer>>();
-    var visited = new HashSet<GraphNode<Integer>>();
 
     for (GraphNode<Integer> root : graph.roots()) {
-      if (!visited.add(root)) {
+      if (visited.contains(root.value())) {
         continue;
       }
-
       queue.add(root);
-      visited.add(root);
 
       while (!queue.isEmpty()) {
-        GraphNode<Integer> next = queue.removeFirst();
-        result.add(next.value());
-        for (GraphNode<Integer> connected : next.connected()) {
-          if (visited.add(connected)) {
-            queue.addLast(connected);
+        GraphNode<Integer> removed = queue.removeFirst();
+        if (visited.contains(removed.value())) {
+          continue;
+        }
+        visited.add(removed.value());
+        for (GraphNode<Integer> connected : removed.connected()) {
+          if (visited.contains(connected.value())) {
+            continue;
           }
+          queue.addLast(connected);
         }
       }
     }
-
-    return result;
+    return List.copyOf(visited);
   }
 }

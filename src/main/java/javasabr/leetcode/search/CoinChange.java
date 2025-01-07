@@ -8,9 +8,9 @@ public class CoinChange {
     int[] coins = {1, 2, 3};
     int sum = 5;
     System.out.println(recursion(coins, sum));
-    System.out.println(recursionWithMemo(coins, sum));
-    System.out.println(bottomUp(coins, sum));
-    System.out.println(bottomUpSpaceOptimized(coins, sum));
+    System.out.println(memo(coins, sum));
+    System.out.println(dp2d(coins, sum));
+    System.out.println(dp1d(coins, sum));
   }
 
   public static int recursion(int[] coins, int sum) {
@@ -32,15 +32,15 @@ public class CoinChange {
     return withSubtractedCoin + withExcludedCoin;
   }
 
-  public static int recursionWithMemo(int[] coins, int sum) {
+  public static int memo(int[] coins, int sum) {
     int[][] memo = new int[coins.length][sum + 1];
     for (int[] row : memo) {
       Arrays.fill(row, -1);
     }
-    return recursionWithMemo(coins, coins.length, sum, memo);
+    return memo(coins, coins.length, sum, memo);
   }
 
-  private static int recursionWithMemo(int[] coins, int length, int sum, int[][] memo) {
+  private static int memo(int[] coins, int length, int sum, int[][] memo) {
 
     if (sum == 0) {
       return 1;
@@ -53,40 +53,42 @@ public class CoinChange {
     }
 
     int coin = coins[length - 1];
-    int withSubtractedCoin = recursionWithMemo(coins, length, sum - coin, memo);
-    int withExcludedCoin = recursionWithMemo(coins, length - 1, sum, memo);
+    int withSubtractedCoin = memo(coins, length, sum - coin, memo);
+    int withExcludedCoin = memo(coins, length - 1, sum, memo);
 
     return memo[length - 1][sum] = withSubtractedCoin + withExcludedCoin;
   }
 
-  public static int bottomUp(int[] coins, int sum) {
+  public static int dp2d(int[] coins, int sum) {
 
     int length = coins.length;
 
     int[][] indexes = new int[length + 1][sum + 1];
     indexes[0][0] = 1;
 
-    for (int index = 1; index <= length; index++) {
-      int prev = index - 1;
-      int coin = coins[prev];
+    for (int usedCoins = 1; usedCoins <= length; usedCoins++) {
+      int coinIndex = usedCoins - 1;
+      int coin = coins[coinIndex];
       for (int targetSum = 0; targetSum <= sum; targetSum++) {
-        indexes[index][targetSum] += indexes[prev][targetSum];
+        // with excluding this coin
+        indexes[usedCoins][targetSum] += indexes[usedCoins - 1][targetSum];
         if ((targetSum - coin) >= 0) {
-          indexes[index][targetSum] += indexes[index][targetSum - coin];
+          // with included this coin but subtracted the sum
+          indexes[usedCoins][targetSum] += indexes[usedCoins][targetSum - coin];
         }
       }
     }
     return indexes[length][sum];
   }
 
-  public static int bottomUpSpaceOptimized(int[] coins, int sum) {
+  public static int dp1d(int[] coins, int sum) {
 
     int[] indexes = new int[sum + 1];
     indexes[0] = 1;
 
     for (int coin : coins) {
-      for (int j = coin; j <= sum; j++) {
-        indexes[j] += indexes[j - coin];
+      for (int targetSum = coin; targetSum <= sum; targetSum++) {
+        indexes[targetSum] += indexes[targetSum - coin];
       }
     }
 

@@ -1,7 +1,6 @@
 package javasabr.leetcode.repeat;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javasabr.leetcode.Graph;
@@ -34,36 +33,37 @@ public class DFS {
     System.out.println(traverse(withDisconnected));
   }
 
-
   private static List<Integer> traverse(Graph<Integer> graph, int rootValue) {
-    var visited = new HashSet<GraphNode<Integer>>();
-    var result = new ArrayList<Integer>();
-    traverse(graph.root(rootValue), visited, result);
-    return result;
+
+    var visited = new LinkedHashSet<Integer>();
+    GraphNode<Integer> initNode = graph.root(rootValue);
+
+    traverse(initNode, visited);
+
+    return List.copyOf(visited);
   }
 
   private static List<Integer> traverse(Graph<Integer> graph) {
 
-    var visited = new HashSet<GraphNode<Integer>>();
-    var result = new ArrayList<Integer>();
+    var visited = new LinkedHashSet<Integer>();
 
     for (GraphNode<Integer> root : graph.roots()) {
-      traverse(root, visited, result);
+      if(!visited.contains(root.value())) {
+        traverse(root, visited);
+      }
     }
 
-    return result;
+    return List.copyOf(visited);
   }
 
-  private static void traverse(GraphNode<Integer> graphNode, Set<GraphNode<Integer>> visited, List<Integer> result) {
+  private static void traverse(GraphNode<Integer> node, Set<Integer> visited) {
+    visited.add(node.value());
 
-    if (!visited.add(graphNode)) {
-      return;
-    }
-
-    result.add(graphNode.value());
-
-    for (GraphNode<Integer> connected : graphNode.connected()) {
-      traverse(connected, visited, result);
+    for (GraphNode<Integer> connected : node.connected()) {
+      if (visited.contains(connected.value())) {
+        continue;
+      }
+      traverse(connected, visited);
     }
   }
 }
