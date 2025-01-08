@@ -1,5 +1,8 @@
 package javasabr.leetcode.search;
 
+import static javasabr.leetcode.Graph.Connections.node;
+import static javasabr.leetcode.Graph.Connections.root;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,25 +15,25 @@ public class GraphColoring {
   public static void main(String[] args) {
 
     Graph<Integer> bigraph = Graph.with(
-        Graph.Connections.root(0, 1),
-        Graph.Connections.node(1, 0, 2, 3),
-        Graph.Connections.node(2, 1, 4),
-        Graph.Connections.node(3, 1, 5),
-        Graph.Connections.node(4, 2, 8),
-        Graph.Connections.node(5, 3, 6),
-        Graph.Connections.node(6, 5, 7),
-        Graph.Connections.node(7, 6),
-        Graph.Connections.node(8, 4, 9),
-        Graph.Connections.node(9, 8));
+        root(0, 1),
+        node(1, 0, 2, 3),
+        node(2, 1, 4),
+        node(3, 1, 5),
+        node(4, 2, 8),
+        node(5, 3, 6),
+        node(6, 5, 7),
+        node(7, 6),
+        node(8, 4, 9),
+        node(9, 8));
 
    System.out.println(requireColors(bigraph, 3));
 
     Graph<Integer> graph = Graph.with(
-        Graph.Connections.root(0, 1, 2),
-        Graph.Connections.node(1, 0, 2, 3),
-        Graph.Connections.node(2, 0, 1, 4),
-        Graph.Connections.node(3, 1, 4),
-        Graph.Connections.root(4, 3, 2));
+        root(0, 1, 2),
+        node(1, 0, 2, 3),
+        node(2, 0, 1, 4),
+        node(3, 1, 4),
+        root(4, 3, 2));
 
     System.out.println(requireColors(graph, 10));
     System.out.println(requireColors(graph, 2));
